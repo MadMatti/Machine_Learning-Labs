@@ -41,7 +41,7 @@ def RBFKernel(x, y, sigma=1.0):     # max value for sigma = 10
     '''Optional parameter sigma controls the width of the Gaussian'''
     return math.exp(-np.linalg.norm(x-y)**2 / (2 * (sigma ** 2)))
 
-Kernel = LinearKernel
+Kernel = RBFKernel
 
 
 # Generate P matrix
