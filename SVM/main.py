@@ -1,8 +1,10 @@
+from pdb import line_prefix
 import numpy as np
 from scipy.optimize import minimize
 from matplotlib import pyplot as plt
 import random
 import math
+import matplotlib.patches as mpatches
 
 
 # Generate test data
@@ -11,9 +13,9 @@ import math
 #np.random.seed(100)    # to get the same random numbers
 
 classA = np.concatenate(
-    (np.random.randn(10, 2) * 0.2 + [1.5, 0.5],
-    np.random.randn(10, 2) * 0.2 + [-1.5, 0.5]))
-classB = np.random.randn(20, 2) * 0.2 + [0.0, -0.5]
+    (np.random.randn(10, 2) * 0.5 + [1.5, 0.5],
+    np.random.randn(10, 2) * 0.5 + [-1.5, 0.5]))
+classB = np.random.randn(20, 2) * 0.5 + [0.0, -0.5]
 
 inputs = np.concatenate((classA, classB))
 targets = np.concatenate((np.ones(classA.shape[0]), -np.ones(classB.shape[0])))
@@ -31,7 +33,7 @@ targets = targets[permute]
 def LinearKernel(x, y):
     return np.dot(x, y)
 
-def PolynomialKernel(x, y, p=3):    # max value for p = 10
+def PolynomialKernel(x, y, p=2):    # max value for p = 10
     '''Optional parameter p controls the degree of the polynomial'''
     return (1 + np.dot(x, y)) ** p
 
@@ -39,7 +41,7 @@ def RBFKernel(x, y, sigma=1.0):     # max value for sigma = 10
     '''Optional parameter sigma controls the width of the Gaussian'''
     return math.exp(-np.linalg.norm(x-y)**2 / (2 * (sigma ** 2)))
 
-Kernel = RBFKernel
+Kernel = LinearKernel
 
 
 # Generate P matrix
@@ -73,7 +75,7 @@ start = np.zeros(N)
 
 #B = [(0, None) for b in range(N)]  for having only lower bound
 
-C = 10000
+C = 10
 B = [(0, C) for b in range(N)]  # for having both lower and upper bounds
 
 '''Set the constraint, in this case the zerofun function. XC is given as a dictionary'''
@@ -124,5 +126,13 @@ ygrid = np.linspace(-4, 4)
 grid = np.array([[indicator(x, y) for x in xgrid] for y in ygrid])
 plt.contour(xgrid, ygrid, grid, (-1.0, 0.0, 1.0), colors=('red', 'black', 'blue'), linewidths=(1, 3, 1))
 
-plt.savefig('resources/svmplot.png')  # save a copy in a file
+blue_patch = mpatches.Patch(color='blue', label='ClassA')
+red_patch = mpatches.Patch(color='red', label='ClassB')
+black_patch = mpatches.Patch(color='black', label='Decision Boundary')
+plt.legend(handles=[blue_patch, red_patch, black_patch])
+
+plt.xlabel('X')
+plt.ylabel('Y')
+
+plt.savefig('SVM/resources/svmplot.png')  # save a copy in a file
 plt.show()
