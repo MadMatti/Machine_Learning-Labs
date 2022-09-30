@@ -75,7 +75,7 @@ start = np.zeros(N)
 
 #B = [(0, None) for b in range(N)]  for having only lower bound
 
-C = 10
+C = 1000
 B = [(0, C) for b in range(N)]  # for having both lower and upper bounds
 
 '''Set the constraint, in this case the zerofun function. XC is given as a dictionary'''
