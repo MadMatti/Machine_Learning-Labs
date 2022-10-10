@@ -10,7 +10,7 @@ import matplotlib.patches as mpatches
 # Generate test data
 
 '''Generate two data class with 2D Gaussian distribution'''
-np.random.seed(42)    # to get the same random numbers
+#np.random.seed(42)    # to get the same random numbers
 
 classA = np.concatenate(
     (np.random.randn(10, 2) * 0.2 + [1.5, 0.5],
@@ -37,11 +37,11 @@ def PolynomialKernel(x, y, p=2):    # max value for p = 10
     '''Optional parameter p controls the degree of the polynomial'''
     return (1 + np.dot(x, y)) ** p
 
-def RBFKernel(x, y, sigma=1.0):     # max value for sigma = 10
+def RBFKernel(x, y, sigma=0.5):     # max value for sigma = 10
     '''Optional parameter sigma controls the width of the Gaussian'''
     return math.exp(-np.linalg.norm(x-y)**2 / (2 * (sigma ** 2)))
 
-Kernel = LinearKernel
+Kernel = RBFKernel
 
 
 # Generate P matrix
@@ -75,6 +75,9 @@ start = np.zeros(N)
 '''Set B, i.e., the bounds for alpha vector'''
 
 #B = [(0, None) for b in range(N)]  for having only lower bound
+
+'''With an high value for C is possible to classify dataset with high deviance only using the RBF kernel, otherwise the program is going to fail
+   Alternatively is it possivle to use low C and simpler kernels for a simpler but less precise classification'''
 
 C = 1000
 B = [(0, C) for b in range(N)]  # for having both lower and upper bounds
