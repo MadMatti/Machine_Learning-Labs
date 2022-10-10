@@ -66,10 +66,14 @@ def mlParams(X, labels, W=None):
     mu = np.zeros((Nclasses,Ndims))
     sigma = np.zeros((Nclasses,Ndims,Ndims))
 
-    # TODO: fill in the code to compute mu and sigma!
-    # ==========================
-    
-    # ==========================
+    # Implementing the code to calculate the class means (mu) and covariance (sigma) as explained in expression (8), (10)
+    for ci in range(Nclasses):
+        xi = np.where(labels == ci)[0]
+        # Mean
+        mu = sum(xi) / Nclasses
+        # Covariance matrix
+        sigma[ci] = np.diag(sum(mu, np.square(mu)) / Nclasses)
+
 
     return mu, sigma
 
