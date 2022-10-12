@@ -6,7 +6,7 @@ import matplotlib.cm as cm
 from matplotlib.patches import Ellipse
 from matplotlib.colors import ColorConverter
 import random as rnd
-from sklearn.datasets.samples_generator import make_blobs
+from sklearn.datasets import make_blobs
 from sklearn import decomposition, tree
 
 # import seaborn as sns
@@ -105,21 +105,21 @@ def trteSplitEven(X,y,pcSplit,seed=None):
 
 def fetchDataset(dataset='iris'):
     if dataset == 'iris':
-        X = genfromtxt('irisX.txt', delimiter=',')
-        y = genfromtxt('irisY.txt', delimiter=',',dtype=np.int)-1
+        X = genfromtxt('baesian-classifier/irisX.txt', delimiter=',')
+        y = genfromtxt('baesian-classifier/irisY.txt', delimiter=',',dtype=np.int)-1
         pcadim = 2
     elif dataset == 'wine':
-        X = genfromtxt('wineX.txt', delimiter=',')
-        y = genfromtxt('wineY.txt', delimiter=',',dtype=np.int)-1
+        X = genfromtxt('baesian-classifier/wineX.txt', delimiter=',')
+        y = genfromtxt('baesian-classifier/wineY.txt', delimiter=',',dtype=np.int)-1
         pcadim = 0
     elif dataset == 'olivetti':
-        X = genfromtxt('olivettifacesX.txt', delimiter=',')
+        X = genfromtxt('baesian-classifier/olivettifacesX.txt', delimiter=',')
         X = X/255
-        y = genfromtxt('olivettifacesY.txt', delimiter=',',dtype=np.int)
+        y = genfromtxt('baesian-classifier/olivettifacesY.txt', delimiter=',',dtype=np.int)
         pcadim = 20
     elif dataset == 'vowel':
-        X = genfromtxt('vowelX.txt', delimiter=',')
-        y = genfromtxt('vowelY.txt', delimiter=',',dtype=np.int)
+        X = genfromtxt('baesian-classifier/vowelX.txt', delimiter=',')
+        y = genfromtxt('baesian-classifier/vowelY.txt', delimiter=',',dtype=np.int)
         pcadim = 0
     else:
         print("Please specify a dataset!")
@@ -284,7 +284,7 @@ class DecisionTreeClassifier(object):
 
     def trainClassifier(self, Xtr, yTr, W=None):
         rtn = DecisionTreeClassifier()
-        rtn.classifier = tree.DecisionTreeClassifier(max_depth=Xtr.shape[1]/2+1)
+        rtn.classifier = tree.DecisionTreeClassifier(max_depth=int(Xtr.shape[1]/2+1))
         if W is None:
             rtn.classifier.fit(Xtr, yTr)
         else:
