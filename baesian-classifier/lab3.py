@@ -45,7 +45,7 @@ def computePrior(labels, W=None):
     # TODO: compute the values of prior for each class!
     # ==========================
 
-    # Assignment 2, part 1
+    # Assignment 2.1
     # for k in classes:
     #     # (prior for a given class) = (number of samples in the class) / (total number of samples)
     #     prior[k] = np.size(np.where(k == labels)[0]) / len(labels)  # Eq. 12
@@ -156,23 +156,23 @@ class BayesClassifier(object):
 # Call `genBlobs` and `plotGaussian` to verify your estimates.
 
 
-# X, labels = genBlobs(centers=5)
-# mu, sigma = mlParams(X,labels)
-# plotGaussian(X,labels,mu,sigma)
+#X, labels = genBlobs(centers=5)
+#mu, sigma = mlParams(X,labels)
+#plotGaussian(X,labels,mu,sigma)
 
 
 # Call the `testClassifier` and `plotBoundary` functions for this part.
 
 
-# testClassifier(BayesClassifier(), dataset='iris', split=0.7)
+#testClassifier(BayesClassifier(), dataset='iris', split=0.7)
 
 
 
-# testClassifier(BayesClassifier(), dataset='vowel', split=0.7)
+#testClassifier(BayesClassifier(), dataset='vowel', split=0.7)
 
 
 
-# plotBoundary(BayesClassifier(), dataset='iris',split=0.7)
+#plotBoundary(BayesClassifier(), dataset='vowel',split=0.7)
 
 
 # ## Boosting functions to implement
@@ -304,15 +304,15 @@ class BoostClassifier(object):
 # Call the `testClassifier` and `plotBoundary` functions for this part.
 
 
-# testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
+#testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
 
 
 
-# testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='vowel',split=0.7)
+#testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='vowel',split=0.7)
 
 
 
-# plotBoundary(BoostClassifier(BayesClassifier()), dataset='iris',split=0.7)
+#plotBoundary(BoostClassifier(BayesClassifier()), dataset='iris',split=0.7)
 
 
 # Now repeat the steps with a decision tree classifier.
