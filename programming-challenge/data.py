@@ -22,13 +22,10 @@ def cleaning(df):
     df_c = df_c[valid_i]
 
     '''Remove outliers'''
-    Q1 = np.percentile(df_c.select_dtypes(include=["float"]), 25, interpolation = 'midpoint')
-    Q3 = np.percentile(df_c.select_dtypes(include=["float"]), 75, interpolation = 'midpoint')
-    IQR = Q3 - Q1
-    upper = np.where(df_c.select_dtypes(include=["float"]) >= (Q3 + 1.5 * IQR))
-    lower = np.where(df_c.select_dtypes(include=["float"]) <= (Q1 - 1.5 * IQR))
-    inliers = ~ (np.isin(df_c.select_dtypes(include=["float"]), upper) & ~ np.isin(df_c.select_dtypes(include=["float"]), lower)).any(axis=1)
-    df_c = df_c[inliers]
+    numeric_col = ['x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x8', 'x9', 'x10', 'x11', 'x13']
+    cateorical_cal = ['x7', 'x12']
+    df_c.boxplot(numeric_col)
+    plt.show()
     
     return df_c
 
@@ -41,6 +38,7 @@ def analysis(df):
 
 if __name__ == "__main__":
     df = load_file("programming-challenge/resources/TrainOnMe-4.csv")
+    cleaning(df)
     print(df.head())
 
 

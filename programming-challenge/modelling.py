@@ -15,6 +15,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, AdaBoostClassifier, BaggingClassifier, GradientBoostingClassifier
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
+from sklearn.naive_bayes import GaussianNB
 
 import numpy as np
 R = 42
@@ -40,13 +41,14 @@ def transform(XY):
 classifiers = {
     "K-Nearest Neighbors": KNeighborsClassifier(n_neighbors=5),
     "Decision Tree": DecisionTreeClassifier(),
-    "Random Forest": RandomForestClassifier(random_state=R),
+    "Random Forest": RandomForestClassifier(n_estimators=1000, random_state=R, max_depth=1000),
     "Gradient Boosting": GradientBoostingClassifier(random_state=R),
     "Extreme random forest": ExtraTreesClassifier(random_state=R),
     "AdaBoost": AdaBoostClassifier(),
     "Bagging": BaggingClassifier(random_state=R),
     "SVM": SVC(),
-    "Ridge Classifier": RidgeClassifierCV()
+    "Ridge Classifier": RidgeClassifierCV(),
+    "Naive Bayes": GaussianNB(),
 }
 
 def test_classifiers(preprocessor, XY_t):
