@@ -2,12 +2,10 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-TRAIN_FILE = "programming-challenge/resources/TrainOnMe-4.csv"
-TEST_FILE = "programming-challenge/resources/TestOnMe-4.csv"
 
 def load_file(file_name):
     """Load a file into a pandas dataframe"""
-    return pd.read_csv(file_name)
+    return pd.read_csv(file_name, index_col=0)
 
 def cleaning(df):
     '''Drop duplicates and null values'''
@@ -41,22 +39,10 @@ def analysis(df):
     print(df_encoded.corr())
     "We notice data are quite uncorrelated except for x2 and x6"
 
-
 if __name__ == "__main__":
-    df = load_file(TRAIN_FILE)
+    df = load_file("programming-challenge/resources/TrainOnMe-4.csv")
+    print(df.head())
 
-    # print(df.head())
-    # print(df.shape)
-    # print(df.isnull().sum())
-    df_clean = cleaning(df)
-    # print(dfc.shape)
-    # print(dfc.describe(include='all'))
-    # print(dfc.dtypes.value_counts())
-    # print(dfc['x1'].describe())
-    # print(dfc['x12'].unique())
-    # print(dfc.describe())
-    # print(dfc.shape)
-    # print(df_cc.describe())
-    # print(df_cc.shape)
+
 
 
