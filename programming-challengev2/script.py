@@ -28,3 +28,4 @@ def cleaning(df):
     df_c = df_c[is_inlier]
 
     return df_c
+

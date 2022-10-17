@@ -118,7 +118,6 @@ def test_model(model, X, Y, file):
     np.average(cross_val_score(model.best_estimator_, X, Y, cv=cv_test))
 
     y_pred = cross_val_predict(model.best_estimator_, X, Y, cv=cv_test, n_jobs=-1)
-    print(confusion_matrix(Y, y_pred))
     print(classification_report(Y, y_pred))
 
     estimator = model.best_estimator_
@@ -128,7 +127,7 @@ def test_model(model, X, Y, file):
 
     predictions = estimator.predict(df_eval)
 
-    OUT_FILE = 'resources/labels.txt'
+    OUT_FILE = 'programming_challenge/resources/labels.txt'
 
     with open(OUT_FILE, 'w') as f:
         for prediction in predictions:
