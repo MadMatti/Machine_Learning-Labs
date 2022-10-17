@@ -1,5 +1,3 @@
-from sklearn import preprocessing
-from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OrdinalEncoder
@@ -14,6 +12,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import classification_report
+
+from skopt import BayesSearchCV
 
 from os import linesep
 
@@ -62,12 +62,31 @@ def test_classifiers(preprocessor, XY_t):
     'forest__n_estimators': [200, 600, 800, 850, 875, 900, 950, 975, 1000, 1100, 1200, 1400, 1600, 1800, 2000, 2200, 2400],
     }
 
-    forest_search = RandomizedSearchCV(pipeline, param_distributions=params, n_iter=240, verbose=1, n_jobs=-1, cv=cv)
-    forest_search.fit(X_t, Y_t)
-    print(forest_search.best_params_)
-    print(forest_search.best_score_)
+    # forest_search = RandomizedSearchCV(pipeline, param_distributions=params, n_iter=240, verbose=1, n_jobs=-1, cv=cv)
+    # forest_search.fit(X_t, Y_t)
+    # print(forest_search.best_params_)
+    # print(forest_search.best_score_)
 
-    return forest_search
+    max_depth = list(range(1,101, 2))
+    min_samples_l = list(range(1,21, 2))
+    min_samples_s = list(range(2,51, 2))
+    estim = list(range(100, 5000, 20))
+
+    params_b = {
+    'forest__bootstrap': [True, False],
+    'forest__max_depth': max_depth,
+    'forest__max_features': ['sqrt', 'log2'],
+    'forest__min_samples_leaf': min_samples_l,
+    'forest__min_samples_split': min_samples_s,
+    'forest__n_estimators': estim,
+    }
+
+    forest_search_b = BayesSearchCV(pipeline, search_spaces=params_b, n_iter=240, verbose=1, n_jobs=-1, cv=cv)
+    forest_search_b.fit(X_t, Y_t)
+    print(forest_search_b.best_params_)
+    print(forest_search_b.best_score_)
+
+    return forest_search_b
 
 def test_model(model, X, Y, file):
     cv_test = StratifiedKFold(n_splits=5, random_state=(R + 1), shuffle=True)
