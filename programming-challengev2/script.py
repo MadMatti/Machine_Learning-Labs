@@ -1,8 +1,6 @@
-import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
+import numpy as np
 from scipy import stats
-
 
 def load_file(file_name):
     """Load a file into a pandas dataframe"""
@@ -30,12 +28,3 @@ def cleaning(df):
     df_c = df_c[is_inlier]
 
     return df_c
-
-def analysis(df):
-    '''Encode y column and calculate correlation'''
-    df_encoded = df.copy()
-    df_encoded.y = df.y.astype("category").cat.codes
-    print(df_encoded.corr())
-    "We notice data are quite uncorrelated except for x2 and x6"
-
-
