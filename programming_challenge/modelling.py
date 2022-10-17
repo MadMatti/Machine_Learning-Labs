@@ -2,24 +2,18 @@ from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
+from sklearn.preprocessing import OrdinalEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA, KernelPCA
+from sklearn.decomposition import PCA
 from sklearn.compose import ColumnTransformer
 
-from sklearn.linear_model import LogisticRegressionCV, RidgeClassifierCV
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import cross_val_score, StratifiedKFold, KFold
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, AdaBoostClassifier, BaggingClassifier, GradientBoostingClassifier
-from sklearn.svm import SVC
-from sklearn.neural_network import MLPClassifier
-from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import cross_val_score, StratifiedKFold
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.model_selection import cross_val_predict
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import classification_report
 
 from os import linesep
 
@@ -46,34 +40,12 @@ def transform(XY):
     
     return preprocessor
 
-classifiers = {
-    "Random Forest": RandomForestClassifier(n_estimators=1000, random_state=R, max_depth=1000),
-    "Gradient Boosting": GradientBoostingClassifier(random_state=R),
-    "Extreme random forest": ExtraTreesClassifier(random_state=R),
-    "SVM": SVC(C=2, kernel='rbf', gamma=0.1, random_state=R),
-    "Naive Bayes": GaussianNB(),
-}
+
 
 def test_classifiers(preprocessor, XY_t):
     X_t, Y_t = XY_t
-    best_cls = None
-    name_best_cls = ""
-    best_accuracy = 0
 
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=R)
-
-    # for cls_name, cls in classifiers.items():
-    #     pipeline = Pipeline(steps=[('preprocessor', preprocessor), ('standardscaler', StandardScaler()), ('classifier', cls)])
-    #     cv_accuracies = np.average(cross_val_score(pipeline, X_t, Y_t, cv=cv))
-
-    #     print(f"{cls_name} accuracy: {cv_accuracies}")
-
-    #     if cv_accuracies > best_accuracy:
-    #         best_accuracy = cv_accuracies
-    #         best_cls = pipeline
-    #         name_best_cls = cls_name
-
-    # print(f"Best classifier: {name_best_cls} with accuracy: {best_accuracy}")
 
     '''Find the best parameters for the random forest classifier'''
     '''Random Forest'''
@@ -94,21 +66,6 @@ def test_classifiers(preprocessor, XY_t):
     forest_search.fit(X_t, Y_t)
     print(forest_search.best_params_)
     print(forest_search.best_score_)
-
-    '''SVM'''
-    # pipeline_svc = Pipeline(steps=[('preprocessor', preprocessor), ('standardscaler', StandardScaler()), ('svc', SVC())])
-    # print(np.average(cross_val_score(pipeline_svc, X_t, Y_t, cv=cv)))
-    # C_range = [0.01, 0.1, 0.5, 1, 10, 1000, 10000]    
-    # gamma_range = [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000]
-    # params_svc = { 
-    #     'svc__C': C_range,
-    #     'svc__kernel': ['rbf', 'poly'],
-    #     'svc__gamma': gamma_range
-    # }
-    # svc = RandomizedSearchCV(pipeline_svc, param_distributions=params_svc, n_iter=120, verbose=1, n_jobs=-1, cv=cv)
-    # svc.fit(X_t, Y_t)
-    # print(svc.best_params_)
-    # print(svc.best_score_)
 
     return forest_search
 
