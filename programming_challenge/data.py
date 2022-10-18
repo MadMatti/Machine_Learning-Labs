@@ -12,6 +12,12 @@ def cleaning(df):
     '''Drop duplicates and null values'''
     df.drop_duplicates()
     df = df.dropna()
+    "Drop non numerical columns"
+    df = df.drop('x7', axis=1)
+    df = df.drop('x12', axis=1)
+    "Drop columns with high correlation"
+    df = df.drop('x2', axis=1)
+    df = df.drop('x6', axis=1)
 
     '''Clean x4 column and convert it to float value'''
     "x4 column contains float number, but it is encoded as object values"
@@ -20,8 +26,8 @@ def cleaning(df):
     df_c['x4'] = pd.to_numeric(df_c['x4'])
 
     '''Clean x12 column'''
-    valid_i = df_c.x12.isin(['True', 'False'])
-    df_c = df_c[valid_i]
+    # valid_i = df_c.x12.isin(['True', 'False'])
+    # df_c = df_c[valid_i]
 
     '''Remove outliers'''
     "I notice x2 and x4 may have outliers, so I remove them"
@@ -36,6 +42,6 @@ def analysis(df):
     df_encoded = df.copy()
     df_encoded.y = df.y.astype("category").cat.codes
     print(df_encoded.corr())
-    "We notice data are quite uncorrelated except for x2 and x6"
+    "I notice data are quite uncorrelated except for x2 and x6"
 
 
