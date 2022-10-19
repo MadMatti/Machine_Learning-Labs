@@ -32,7 +32,7 @@ R = 42
 def split(df):
     X = df.drop('y', axis=1)
     Y = df.y
-    X_train, Y_train = shuffle(X, Y, random_state=R)
+    X_train, Y_train = shuffle(X, Y)
     return X_train, Y_train
 
 def transform(XY):
@@ -42,7 +42,7 @@ def transform(XY):
     categorical_transformer = Pipeline(steps=[('imputer', SimpleImputer(strategy='constant', fill_value="missing")),
                                               ('encoder', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1))])
     numeric_transformer = Pipeline(steps=[('imputer', SimpleImputer(strategy='median')),
-                                          ('pca', PCA(n_components=8))])
+                                          ('pca', PCA(n_components=None))])
     preprocessor = ColumnTransformer(transformers=[('num', numeric_transformer, num_features), 
                                     ('cat', categorical_transformer, cat_features)])
     
@@ -59,8 +59,8 @@ def test_classifiers(preprocessor, XY_t):
     '''Random Forest'''
     forest = Pipeline(steps=[('preprocessor', preprocessor),
                             ('standardscaler', StandardScaler()),
-                           ('forest', RandomForestClassifier(random_state=R, n_estimators=900, min_samples_split=10, 
-                           min_samples_leaf=2, max_features='sqrt', max_depth=45, bootstrap=True))])
+                           ('forest', RandomForestClassifier(random_state=R, n_estimators=1600, min_samples_split=11, 
+                           min_samples_leaf=1, max_features='log2', max_depth=100, bootstrap=True))])
     forest.fit(X_t, Y_t)
     print("Random Forest")
     print(np.average(cross_val_score(forest, X_t, Y_t, cv=cv)))
@@ -111,15 +111,15 @@ def test_classifiers(preprocessor, XY_t):
     '''Gradient Boosting'''
     gradient = Pipeline(steps=[('preprocessor', preprocessor),
                             ('standardscaler', StandardScaler()),
-                            ('gb', GradientBoostingClassifier(random_state=R, n_estimators=50, max_depth=5, learning_rate=0.075))])
+                            ('gb', GradientBoostingClassifier(random_state=R, n_estimators=75, max_depth=5, learning_rate=0.2))])
     gradient.fit(X_t, Y_t)
     print("Gradient Boosting")
     print(np.average(cross_val_score(gradient, X_t, Y_t, cv=cv)))
 
     '''Extremely Random Forest'''
     extreme_forest = Pipeline(steps=[('preprocessor', preprocessor), ('standardscaler', StandardScaler()),
-                                    ('extreme', ExtraTreesClassifier(random_state=R, n_estimators=875, min_samples_split=6, 
-                                                                        min_samples_leaf=1, max_features='log2', max_depth=55, bootstrap=False))])
+                                    ('extreme', ExtraTreesClassifier(random_state=R, n_estimators=950, min_samples_split=2, 
+                                                                        min_samples_leaf=1, max_features='log2', max_depth=20, bootstrap=False))])
     extreme_forest.fit(X_t, Y_t)
     print("Extremely Random Forest")
     print(np.average(cross_val_score(extreme_forest, X_t, Y_t, cv=cv)))
@@ -186,12 +186,13 @@ def test_classifiers(preprocessor, XY_t):
 
 
     '''Ensemble'''
-    forest_e = RandomForestClassifier(random_state=R, n_estimators=900, min_samples_split=10, 
-                           min_samples_leaf=2, max_features='sqrt', max_depth=45, bootstrap=True)
+    forest_e = RandomForestClassifier(random_state=R, n_estimators=1600, min_samples_split=11, 
+                                        min_samples_leaf=1, max_features='log2', max_depth=100, bootstrap=True)
     svc_e = SVC(random_state=R, kernel='rbf', C=1.0, gamma='auto', probability=True)
-    gradient_e = GradientBoostingClassifier(random_state=R, n_estimators=50, max_depth=5, learning_rate=0.075)
+    gradient_e = GradientBoostingClassifier(random_state=R, n_estimators=75, max_depth=5, learning_rate=0.2)
     bayes_e = GaussianNB()
-    extreme_forest_e = ExtraTreesClassifier(random_state=R, n_estimators=875, min_samples_split=6, min_samples_leaf=1, max_features='log2', max_depth=55, bootstrap=False)
+    extreme_forest_e = ExtraTreesClassifier(random_state=R, n_estimators=950, min_samples_split=2, 
+                                            min_samples_leaf=1, max_features='log2', max_depth=20, bootstrap=False)
     bagging_e = BaggingClassifier(random_state=R, n_estimators=90, max_samples=9, max_features=7, bootstrap=False)
 
     estimators = [('forest', forest_e), ('svc', svc_e), ('gradient', gradient_e), ('bayes', bayes_e), ('extreme', extreme_forest_e), ('bagging', bagging_e)]
@@ -210,10 +211,12 @@ def test_classifiers(preprocessor, XY_t):
     print("Ensemble 2")
     print(np.average(cross_val_score(model, X_t, Y_t, cv=cv)))
 
+    return ensemble
 
     '''Test classifiers over different splits value'''
     i = 0
-    while i < 300:
+    while i < 100:
+        X_t, Y_t = shuffle(X_t, Y_t)
         if (i <=50):
             cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=R)
             print(i)
@@ -271,12 +274,12 @@ def test_classifiers(preprocessor, XY_t):
 def test_model(model, X, Y, file):
     cv_test = StratifiedKFold(n_splits=5, random_state=(R + 1), shuffle=True)
 
-    np.average(cross_val_score(model.best_estimator_, X, Y, cv=cv_test))
+    np.average(cross_val_score(model, X, Y, cv=cv_test))
 
-    y_pred = cross_val_predict(model.best_estimator_, X, Y, cv=cv_test, n_jobs=-1)
+    y_pred = cross_val_predict(model, X, Y, cv=cv_test, n_jobs=-1)
     print(classification_report(Y, y_pred))
 
-    estimator = model.best_estimator_
+    estimator = model
     estimator.fit(X, Y)
 
     df_eval = pd.read_csv(file, index_col=0)

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     df = load_file(TRAIN_FILE)
     df_clean = cleaning(df)
 
-    test_classifiers(transform(split(df_clean)), split(df_clean))
+    #test_classifiers(transform(split(df_clean)), split(df_clean))
 
-    #test_model(test_classifiers(transform(split(df_clean)), split(df_clean)), X = df_clean.drop('y', axis=1), Y = df_clean.y, file = TEST_FILE)
+    test_model(test_classifiers(transform(split(df_clean)), split(df_clean)), X = df_clean.drop('y', axis=1), Y = df_clean.y, file = TEST_FILE)
     
