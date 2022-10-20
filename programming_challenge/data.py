@@ -37,4 +37,3 @@ def analysis(df):
     print(df_encoded.corr())
     "I notice data are quite uncorrelated except for x2 and x6"
 
-

@@ -153,10 +153,10 @@ def test_classifiers(preprocessor, XY_t):
     print(np.average(cross_val_score(ensemble, X_t, Y_t, cv=cv)))
 
     '''Ensemble 2'''
-    classifiers = [('qda', QuadraticDiscriminantAnalysis()), ('lda', LinearDiscriminantAnalysis()), ('rf', forest_e)] 
-    model = StackingClassifier(classifiers, final_estimator=LinearDiscriminantAnalysis(), cv=cv)
+    classifiers = [('qda', QuadraticDiscriminantAnalysis()), ('lda', LinearDiscriminantAnalysis()), ('rf', extreme_forest_e)] 
+    ensemble2 = StackingClassifier(classifiers, final_estimator=LinearDiscriminantAnalysis(), cv=cv)
     print("Ensemble 2")
-    print(np.average(cross_val_score(model, X_t, Y_t, cv=cv)))
+    print(np.average(cross_val_score(ensemble2, X_t, Y_t, cv=cv)))
 
     '''Ensemble 3'''
     extreme_forest_f1 = ExtraTreesClassifier(random_state=R, n_estimators=950, min_samples_split=2, 
@@ -179,7 +179,7 @@ def test_classifiers(preprocessor, XY_t):
     i = 0
     extreme_acc = []
     ensemble_acc = []
-    ensemble3_acc = []
+    ensemble2_acc = []
     while i < 100:
         X_t, Y_t = shuffle(X_t, Y_t)
         cv = StratifiedKFold(n_splits=5, shuffle=True)
@@ -205,20 +205,17 @@ def test_classifiers(preprocessor, XY_t):
         print("Ensemble")
         print(acc_en)
 
-        ensemble3 = Pipeline(steps=[('preprocessor', preprocessor), ('standardscaler', StandardScaler()),
-                                    ('ens', VotingClassifier(estimators=classifiers_f, voting='soft'))])
-        acc_en3 = np.average(cross_val_score(ensemble3, X_t, Y_t, cv=cv))
-        ensemble3_acc.append(acc_en3)
-        print("Ensemble 3")
-        print(acc_en3)
+        ensemble2 = Pipeline(steps=[('preprocessor', preprocessor),('standardscaler', StandardScaler()),
+                                    ('ens2', StackingClassifier(classifiers, final_estimator=LinearDiscriminantAnalysis(), cv=cv))])
+        acc_en2 = np.average(cross_val_score(ensemble2, X_t, Y_t, cv=cv))
+        ensemble2_acc.append(acc_en2)
+        print("Ensemble 2")
+        print(acc_en2)
 
         i+=1
     
-    print("Extreme, Ensemble", "Ensemble 3")
-    print(np.mean(extreme_acc), np.mean(ensemble_acc), np.mean(ensemble3_acc))
-
-    return extreme
-
+    print("Extreme, Ensemble", "Ensemble 2")
+    print(np.mean(extreme_acc), np.mean(ensemble_acc), np.mean(ensemble2_acc))
         
 
 
@@ -234,6 +231,9 @@ def test_model(model, X, Y, file):
     estimator.fit(X, Y)
 
     df_eval = pd.read_csv(file, index_col=0)
+    df_eval.drop('x7', inplace=True, axis=1)
+    df_eval.drop('x12', inplace=True, axis=1)
+    
     predictions = estimator.predict(df_eval)
 
     OUT_FILE = 'programming_challenge/resources/labels.txt'
