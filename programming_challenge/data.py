@@ -22,10 +22,6 @@ def cleaning(df):
     df_c = df[valid_v].copy()
     df_c['x4'] = pd.to_numeric(df_c['x4'])
 
-    '''Clean x12 column'''
-    # valid_i = df_c.x12.isin(['True', 'False'])
-    # df_c = df_c[valid_i]
-
     '''Remove outliers'''
     "I notice x2 and x4 may have outliers, so I remove them"
     zscore = np.abs(stats.zscore(df_c.select_dtypes(include=["float"])))

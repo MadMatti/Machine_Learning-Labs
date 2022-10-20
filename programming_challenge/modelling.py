@@ -59,8 +59,8 @@ def test_classifiers(preprocessor, XY_t):
     '''Random Forest'''
     forest = Pipeline(steps=[('preprocessor', preprocessor),
                             ('standardscaler', StandardScaler()),
-                           ('forest', RandomForestClassifier(random_state=R, n_estimators=1600, min_samples_split=11, 
-                           min_samples_leaf=1, max_features='log2', max_depth=100, bootstrap=True))])
+                           ('forest', RandomForestClassifier(random_state=900, n_estimators=975, min_samples_split=5, 
+                                            min_samples_leaf=1, max_features='sqrt', max_depth=40, bootstrap=False))])
     print("Random Forest")
     print(np.average(cross_val_score(forest, X_t, Y_t, cv=cv)))
     
@@ -175,6 +175,7 @@ def test_classifiers(preprocessor, XY_t):
 
 
     '''Test classifiers over different splits value'''
+    return extreme_forest
     i = 0
     extreme_acc = []
     ensemble_acc = []
