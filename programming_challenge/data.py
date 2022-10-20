@@ -15,9 +15,6 @@ def cleaning(df):
     "Drop non numerical columns"
     df = df.drop('x7', axis=1)
     df = df.drop('x12', axis=1)
-    "Drop columns with high correlation"
-    # df = df.drop('x2', axis=1)
-    # df = df.drop('x6', axis=1)
 
     '''Clean x4 column and convert it to float value'''
     "x4 column contains float number, but it is encoded as object values"
